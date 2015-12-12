@@ -13,7 +13,7 @@ bool regCommands(char *individual, const char *pattern) {
     return re_val;
 }
 
-void regAndSpiltCommands(char command[], const char *pattern, QUEUE *commands) {
+void regAndSpiltCommands(char command[], const char *pattern, msh_queue *commands) {
     regex_t reg;
     regcomp(&reg, pattern, REG_EXTENDED | REG_NEWLINE);
     const char *cmd = command;

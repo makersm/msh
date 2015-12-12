@@ -2,30 +2,37 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/wait.h>
-#include "queue.h"
-#include "group.h"
 #include "inputmanager.h"
 #include "eventmanager.h"
+#include "util.h"
+#include "data/group.h"
+
 
 void makePipe(char ***, int);
-
 int main() {
     int flag;
     char command[1024];
     pthread_t managers[4];
-    msh_eventman_init();
-    msh_inputman_init(&managers[0]);
+
+    // Start EventManager; Note that EventManager must be initialized first then anything else
+    msh_eventman_init(msh_eventman_instance()->thread_handle = &managers[0]);
+
+    // Start InputManager
+    msh_inputman_init(&managers[1]);
+
+
+
+    // Hold main thread for program being dead
+    main_never_die();
 }
 
 void dequeue() {
-    QUEUE *commands;
+    msh_queue *commands;
     int i, max = que_count(commands);
     for (i = 0; i < max; i++) {
         void *tmp;
         que_dequeue(commands, &tmp);
-        Group *group = (Group *) tmp;
-
-        switchGroup(group);
+        msh_group *group = (msh_group *) tmp;
 
     }
 }
@@ -52,4 +59,3 @@ void makePipe(char ***cmd, int psize) {
         }
     }
 }
-

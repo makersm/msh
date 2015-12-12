@@ -5,15 +5,14 @@
 #ifndef SHELL_GROUP_H
 #define SHELL_GROUP_H
 #include <stdbool.h>
-#include "queue.h"
+#include "../queue.h"
 
 typedef struct IndivCommand {
-    QUEUE *command;
+    msh_queue *command;
     bool isBack;
     bool isPipe;
-} Group;
+} msh_group;
 
-Group* groupInit();
+msh_group * groupInit();
 
-void switchGroup(Group *);
 #endif //SHELL_GROUP_H

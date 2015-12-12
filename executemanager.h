@@ -3,14 +3,16 @@
 //
 
 #include "event.h"
+#include "data/group.h"
 
 #ifndef SHELL_EXECUTEMANAGER_H
 #define SHELL_EXECUTEMANAGER_H
 
-void msh_executeman_init(pthread_t*);
+void msh_executeman_init(pthread_t*, msh_event);
+static void msh_executeman_run(msh_event);
 void msh_executeman_execute_input(msh_event);
-void msh_executeman_pump_event();
-void msh_executeman_
+void msh_executeman_pump_event(msh_event);
+void msh_executeman_execute_group(msh_group *);
 
 
 #endif //SHELL_EXECUTEMANAGER_H

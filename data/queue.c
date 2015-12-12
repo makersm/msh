@@ -5,10 +5,10 @@
 #include "queue.h"
 
 
-QUEUE *que_create(void) {
-    QUEUE *queue;
+msh_queue *que_create(void) {
+    msh_queue *queue;
 
-    queue = (QUEUE *) malloc(sizeof(QUEUE));
+    queue = (msh_queue *) malloc(sizeof(msh_queue));
     if (queue) {
         queue->front = NULL;
         queue->rear = NULL;
@@ -17,7 +17,7 @@ QUEUE *que_create(void) {
     return queue;
 }
 
-QUEUE *que_destroy(QUEUE *queue) {
+msh_queue *que_destroy(msh_queue *queue) {
     NODE *node_temp;
 
     if (queue) {
@@ -33,7 +33,7 @@ QUEUE *que_destroy(QUEUE *queue) {
 }
 
 //insert node in rear
-bool que_enqueue(QUEUE *queue, void *data_in) {
+bool que_enqueue(msh_queue *queue, void *data_in) {
     NODE *node_new;
 
     if (!(node_new = (NODE *) malloc(sizeof(NODE))))
@@ -51,7 +51,7 @@ bool que_enqueue(QUEUE *queue, void *data_in) {
 }
 
 //bring front node and delete
-bool que_dequeue(QUEUE *queue, void **data_out) {
+bool que_dequeue(msh_queue *queue, void **data_out) {
     NODE *node_del;
 
     if (!queue->count) return false;
@@ -67,7 +67,7 @@ bool que_dequeue(QUEUE *queue, void **data_out) {
     return true;
 }
 
-bool que_front(QUEUE *queue, void **data_out) {
+bool que_front(msh_queue *queue, void **data_out) {
     if (!queue->count) return false;
     else {
         *data_out = queue->front->data;
@@ -75,7 +75,7 @@ bool que_front(QUEUE *queue, void **data_out) {
     }
 }
 
-bool que_rear(QUEUE *queue, void **data_out) {
+bool que_rear(msh_queue *queue, void **data_out) {
     if (!queue->count) return false;
     else {
         *data_out = queue->rear->data;
@@ -83,11 +83,11 @@ bool que_rear(QUEUE *queue, void **data_out) {
     }
 }
 
-bool que_is_empty(QUEUE *queue) {
+bool que_is_empty(msh_queue *queue) {
     return (queue->count == 0);
 }
 
-bool que_is_full(QUEUE *queue) {
+bool que_is_full(msh_queue *queue) {
     NODE *node_temp;
 
     node_temp = (NODE *) malloc(sizeof(*(queue->rear)));
@@ -98,7 +98,7 @@ bool que_is_full(QUEUE *queue) {
     return true;
 }
 
-int que_count(QUEUE *queue) {
+int que_count(msh_queue *queue) {
     return queue->count;
 }
 

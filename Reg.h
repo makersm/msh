@@ -6,13 +6,13 @@
 #define SHELL_REG_H
 #include <regex.h>
 #include <stdbool.h>
-#include "queue.h"
+#include "data/queue.h"
 
 static const char *semi_p = "([^;\'\"]+)(([\"][^\"]*[\"])*([\'][^\']*[\'])*([^;]+)*)*";
 static const char *pipe_p = "([^|\'\"]+)(([\"][^\"]*[\"])*([\'][^\']*[\'])*([^|]+)*)*";
 static const char *back_p = ".+[&]( |\t)*$";
 
 bool regCommands(char *individual, const char *p);
-void regAndSpiltCommands(char [], const char *, QUEUE *);
+void regAndSpiltCommands(char [], const char *, msh_queue *);
 
 #endif //SHELL_REG_H
