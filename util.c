@@ -9,6 +9,12 @@
 #include <pthread.h>
 #include <limits.h>
 #include <unistd.h>
+char* msh_util_time_stamp() {
+    time_t t = time(NULL);
+    char re_val[1024];
+    sprintf(re_val, "%ld", t);
+    return re_val;
+}
 
 void msh_util_endless_sleep() {
     for (; ;) {

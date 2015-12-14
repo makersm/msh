@@ -7,9 +7,12 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "executemanager.h"
 #include "eventmanager.h"
 #include "Reg.h"
+#include "util.h"
 
 void msh_executeman_execute_pipe(msh_group *pGroup);
 
@@ -38,7 +41,7 @@ void msh_executeman_switch_input_type(msh_event e) {
 
 void msh_executeman_back_command() {
     msh_event e;
-    e.data = (void *) getpid();
+    e.data = (void *) pthread_self();
     e.event_types = INPUTHAN_BACK_INPUT;
 //    msh_executeman_pump_event(e);
 }
@@ -49,21 +52,28 @@ void msh_executeman_execute_general(msh_group *pGroup) {
         void *command_from_queue;
         que_dequeue(pGroup->command, &command_from_queue);
         char *cmd = (char *) command_from_queue;
+        char *ary[1024];
+        msh_queue queue_arr;
+        regAndSpiltCommands(cmd, space, &queue_arr);
+        int i;
+        for(i = 0; !que_count(&queue_arr); i++) {
+            void *tmp;
+            ary[i] = (char *)que_dequeue(&queue_arr, &tmp);
 
-        char *arr[1024];
-        if (regCommands(cmd, space)) {
-            arr[0] = strtok(cmd, " ");
-
-            int i;
-            for (i = 1; arr[i] = strtok(NULL, " "); i++) { }
-            arr[i] = NULL;
-        } else {
-            arr[0] = cmd;
-            arr[1] = NULL;
         }
+//        if (regCommands(cmd, space)) {
+//            arr[0] = strtok(cmd, " ");
+//
+//            int i;
+//            for (i = 1; arr[i] = strtok(NULL, " "); i++) { }
+//            arr[i] = NULL;
+//        } else {
+//            arr[0] = cmd;
+//            arr[1] = NULL;
+//        }
         //TODO after execute, event check
         //TODO execute_back check
-        execvp(arr[0], arr);
+//        execvp(queue_arr[0], queue_arr);
     }
         // parent
     else {
@@ -74,42 +84,50 @@ void msh_executeman_execute_general(msh_group *pGroup) {
 
 void msh_executeman_execute_pipe(msh_group *pGroup) {
     // child : execute command
-//    int p[2];
-//    int fd_in = 0;
-    while (que_count(pGroup->command)) {
+    char *fifo_name = msh_util_time_stamp();
+    mkfifo(fifo_name, 0666);
+
+    int fd;
+    fd = open(fifo_name, O_RDWR);
+
+    int i, pipe_size = que_count(pGroup->command);
+    for(i = 0; i < pipe_size; i++) {
         void *command_from_queue;
         que_dequeue(pGroup->command, &command_from_queue);
         char *cmd = (char *) command_from_queue;
 
-        if (!fork()) {
-//            dup2(fd_in, 0);
+        int pid = fork();
+        if (pid == 0) {
+            dup2(fd, 0);
 
-            char *arr[1024];
-            //TODO token
-//            dup2(p[1], 1);
-            if (regCommands(cmd, space)) {
-                arr[0] = strtok(cmd, " ");
-
-                int i;
-                for (i = 1; arr[i] = strtok(NULL, " "); i++) { }
-                arr[i] = NULL;
-                printf("reg: %d\n", i);
-            } else {
-                arr[0] = cmd;
-                arr[1] = NULL;
+            if(i != pipe_size-1) {
+                dup2(fd, 1);
             }
 
-//            close(p[0]);
-            execvp(arr[0], arr);
+            msh_queue queue_arr;
+            regAndSpiltCommands(cmd, space, &queue_arr);
 
-            exit(EXIT_FAILURE);
+            char *ary[1024];
+            int j, max = que_count(&queue_arr);
+//            printf("max: %d\n", max);
+            for(j = 0; j < max; j++) {
+                void *tmp;
+                que_dequeue(&queue_arr, &tmp);
+                ary[j] = (char*)tmp;
+                printf("arr%d: %s\n", j, ary[j]);
+            }
+            ary[j] = NULL;
+
+            execvp(ary[0], ary);
+//            memset(ary, 0, 1024);
+            exit(0);
 
         } else {
             wait(NULL);
-//            close(p[1]);
-//            fd_in = p[0];
+            printf("count: %d\n", i);
         }
     }
+    printf("hellp");
 }
 
 void msh_executeman_pump_event(msh_event e) {

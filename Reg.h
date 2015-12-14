@@ -11,7 +11,7 @@
 static const char *semi_p = "([^;\'\"]+)(([\"][^\"]*[\"])*([\'][^\']*[\'])*([^;]+)*)*";
 static const char *pipe_p = "([^|\'\"]+)(([\"][^\"]*[\"])*([\'][^\']*[\'])*([^|]+)*)*";
 static const char *back_p = ".+[&]( |\t)*$";
-static const char *space = ".+( |\t).+";
+static const char *space = "([^( )\'\"]+)(([\"][^\"]*[\"])*([\'][^\']*[\'])*([^( )]+)*)*";
 
 bool regCommands(char *individual, const char *p);
 void regAndSpiltCommands(char [], const char *, msh_queue *);

@@ -5,6 +5,8 @@
 #ifndef MSH_UTIL_H
 #define MSH_UTIL_H
 
+char* msh_util_time_stamp();
+
 void msh_util_endless_sleep();
 void msh_util_main_never_die();
 void msh_util_start_input();
