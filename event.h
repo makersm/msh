@@ -11,8 +11,9 @@ typedef struct msh_event {
 } msh_event;
 
 enum msh_event_types {
-    INPUTMAN_READ_INPUT,
-    INPUTMAN_PARSE_DONE,
+    INPUTHAN_READ_INPUT,
+    INPUTHAN_PARSE_DONE,
+    INPUTHAN_BACK_INPUT,
 };
 
 #endif //SHELL_EVENT_H

@@ -1,6 +1,7 @@
 //
 // Created by somin on 15. 12. 7.
 //
+#include <string.h>
 #include "Reg.h"
 
 bool regCommands(char *individual, const char *pattern) {
@@ -14,9 +15,12 @@ bool regCommands(char *individual, const char *pattern) {
 }
 
 void regAndSpiltCommands(char command[], const char *pattern, msh_queue *commands) {
+    char *cmd = (char *)malloc(sizeof(char)*strlen(command)+1);
+    strcpy(cmd, command);
+
     regex_t reg;
     regcomp(&reg, pattern, REG_EXTENDED | REG_NEWLINE);
-    const char *cmd = command;
+
     const int n_matches = 1;
     regmatch_t pmatch[n_matches];
 
@@ -42,7 +46,6 @@ void regAndSpiltCommands(char command[], const char *pattern, msh_queue *command
                     tmp[j] = (command + start)[j];
                 }
                 tmp[j] = '\0';
-
                 que_enqueue(commands, tmp);
             }
         }

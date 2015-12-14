@@ -4,10 +4,12 @@
 
 #include "blockingqueue.h"
 #include <pthread.h>
-#include <semaphore.h>
 
-void msh_blockingqueue_init() {
+static sem_t msh_blockingqueue_sem;
+
+void msh_blockingqueue_init(msh_blockingqueue *bq) {
     sem_init(&msh_blockingqueue_sem, 0, 0);
+    bq->queue = que_create();
 }
 
 void msh_blockingqueue_offer(msh_blockingqueue* bq, msh_event* event) {
@@ -21,6 +23,7 @@ void msh_blockingqueue_offer(msh_blockingqueue* bq, msh_event* event) {
 
     pthread_mutex_unlock(&offer_mutex);
 }
+
 msh_event* msh_blockingqueue_take(msh_blockingqueue* bq) {
     static pthread_mutex_t take_mutex;
 
@@ -32,5 +35,6 @@ msh_event* msh_blockingqueue_take(msh_blockingqueue* bq) {
 
     pthread_mutex_unlock(&take_mutex);
 
-    return (msh_event*)tmp;
+    msh_event *tt = (msh_event*)tmp;
+    return tt;
 }

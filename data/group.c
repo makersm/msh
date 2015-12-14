@@ -9,5 +9,3 @@ msh_group * groupInit() {
     g->isPipe = false;
     g->isBack = false;
 }
-
-}

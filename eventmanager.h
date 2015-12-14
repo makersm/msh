@@ -12,7 +12,7 @@
 
 void msh_eventman_init(pthread_t *);
 
-void msh_eventman_dispatch_event(msh_event);
+static void msh_eventman_dispatch_event(msh_event);
 
 static void msh_eventman_run();
 
@@ -21,10 +21,7 @@ typedef struct eventman_class {
     pthread_t *thread_handle;
 } eventman_class;
 
-eventman_class *msh_eventman_instance() {
-    static eventman_class instance;
-    return &instance;
-}
+eventman_class *msh_eventman_instance();
 
 void msh_eventman_request(msh_event *event);
 

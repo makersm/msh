@@ -5,7 +5,7 @@
 #ifndef SHELL_GROUP_H
 #define SHELL_GROUP_H
 #include <stdbool.h>
-#include "../queue.h"
+#include "queue.h"
 
 typedef struct IndivCommand {
     msh_queue *command;
